@@ -10,11 +10,6 @@ const CustomNavbar = () => {
             <Container>
                 <StyledNavLink
                     to="/"
-                    style={{
-                        color: "white",
-                        fontSize: "3vh",
-                        textDecoration: "none",
-                    }}
                     className="me-4"
                 >
                     Main page
