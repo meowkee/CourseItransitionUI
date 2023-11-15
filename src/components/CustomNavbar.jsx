@@ -1,32 +1,51 @@
-import Form from "react-bootstrap/Form";
-import Navbar from "react-bootstrap/Navbar";
-import { NavLink } from "react-router-dom";
-import { Container } from "react-bootstrap";
-import StyledNavLink from "../styles/CustomNavbarStyles";
+import { Disclosure } from "@headlessui/react";
+import { Link, useLocation } from "react-router-dom";
+import { MAIN_ROUTE } from "../utils/consts";
+
+function classNames(...classes) {
+    return classes.filter(Boolean).join(" ");
+}
 
 const CustomNavbar = () => {
+    const location = useLocation();
     return (
-        <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
-            <Container>
-                <StyledNavLink
-                    to="/"
-                    className="me-4"
-                >
-                    Main page
-                </StyledNavLink>
-                <NavLink to="/" style={{ color: "white" }}>
-                    Main page
-                </NavLink>
-                <Form className="d-flex ms-auto">
-                    <Form.Control
-                        type="search"
-                        placeholder="Search"
-                        className="me-2"
-                        aria-label="Search"
-                    />
-                </Form>
-            </Container>
-        </Navbar>
+        <Disclosure as="nav" className="bg-gray-800">
+            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                <div className="relative flex h-16 items-center justify-between">
+                    <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
+                        <div className="hidden sm:ml-6 sm:block">
+                            <div className="flex space-x-4">
+                                <Link
+                                    to={MAIN_ROUTE}
+                                    className={classNames(
+                                        location.pathname === MAIN_ROUTE
+                                            ? "bg-gray-700 text-white"
+                                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                        "rounded-md px-3 py-2 text-sm font-medium"
+                                    )}
+                                >
+                                    Main page
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        <Link
+                            to="/login"
+                            className="bg-gray-900 text-gray-300 hover:bg-green-900 hover:text-white px-3 py-2 text-sm font-medium rounded-md"
+                        >
+                            Log In
+                        </Link>
+                        <Link
+                            to="/registration"
+                            className="bg-gray-900 text-gray-300 hover:bg-green-900 hover:text-white px-3 py-2 text-sm font-medium rounded-md"
+                        >
+                            Sign Up
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </Disclosure>
     );
 };
 
