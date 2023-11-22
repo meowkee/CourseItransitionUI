@@ -2,18 +2,20 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "..";
 import { useParams, Link } from "react-router-dom";
 import {
-    fetchCollections,
+    fetchUserCollections,
     createCollection,
-    deleteCollection,
+    deleteCollection
 } from "../http/collectionAPI";
-import { COLLECTION_ROUTE } from "../utils/consts";
+import { Routes } from "../utils/consts";
 import Modal from "react-modal";
 import { fetchThemes } from "../http/themeAPI";
+import { observer } from "mobx-react-lite";
+import { fetchUserById } from "../http/userAPI";
+import { useIsAuthor } from "../hooks/useIsAuthor";
 
-const UserPage = () => {
-    const { user } = useContext(Context);
-    const [collections, setCollections] = useState([]);
-    const [themes, setThemes] = useState([]);
+const UserPage = observer(() => {
+    const { collections, themes } = useContext(Context);
+    const [currentUserPage, setCurrentUserPage] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newCollection, setNewCollection] = useState({
         name: "",
@@ -22,30 +24,25 @@ const UserPage = () => {
         subfields: [],
     });
     const { id } = useParams();
+    const isAuthor = useIsAuthor(id);
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const data = await fetchCollections(id);
-                setCollections(data);
-                const { themes } = await fetchThemes();
-                setThemes(themes);
-            } catch (error) {
-                console.error("Error fetching collections:", error);
-            }
+            const fetchedCollections = await fetchUserCollections(id);
+            collections.setCollections(fetchedCollections);
+            const fetchedThemes = await fetchThemes();
+            themes.setThemes(fetchedThemes);
+            const fetchedUser = await fetchUserById(id);
+            setCurrentUserPage(fetchedUser);
         };
 
         fetchData();
-    }, [id]);
+    }, [id, collections, themes]);
 
     const handleDeleteCollection = async (collectionId) => {
-        try {
-            await deleteCollection(collectionId);
-            const data = await fetchCollections(id);
-            setCollections(data);
-        } catch (error) {
-            console.error("Error deleting collection:", error);
-        }
+        await deleteCollection(collectionId);
+        const data = await fetchUserCollections(id);
+        collections.setCollections(data);
     };
 
     const handleOpenModal = () => {
@@ -63,18 +60,14 @@ const UserPage = () => {
     };
 
     const handleCreateCollection = async () => {
-        try {
-            const themeId =
-                newCollection.themeId !== null
-                    ? newCollection.themeId
-                    : themes[0].id;
-            await createCollection({ ...newCollection, themeId: themeId }, id);
-            const updatedCollections = await fetchCollections(id);
-            setCollections(updatedCollections);
-            setIsModalOpen(false);
-        } catch (error) {
-            console.error("Error creating collection:", error);
-        }
+        const themeId =
+            newCollection.themeId !== null
+                ? newCollection.themeId
+                : themes[0].id;
+        await createCollection({ ...newCollection, themeId: themeId }, id);
+        const updatedCollections = await fetchUserCollections(id);
+        collections.setCollections(updatedCollections);
+        setIsModalOpen(false);
     };
 
     const handleAddSubfield = () => {
@@ -97,13 +90,6 @@ const UserPage = () => {
         handleSubfieldChange(index, "type", value);
     };
 
-    const handleThemeChange = (themeId) => {
-        setNewCollection((prev) => ({
-            ...prev,
-            themeId: themeId,
-        }));
-    };
-
     const modalContentStyle = {
         maxHeight: "80vh",
         overflowY: "auto",
@@ -113,23 +99,26 @@ const UserPage = () => {
         <div className="container mx-auto p-14 relative">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">
-                    {user.user.name} collections:
+                    {currentUserPage.user && currentUserPage.user.name}{" "}
+                    collections:
                 </h1>
-                <button
-                    onClick={handleOpenModal}
-                    className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
-                >
-                    Add collection
-                </button>
+                {isAuthor && (
+                    <button
+                        onClick={handleOpenModal}
+                        className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+                    >
+                        Add collection
+                    </button>
+                )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {collections.map((collection) => (
+                {collections.collections.map((collection) => (
                     <div
                         key={collection.id}
                         className="bg-white p-4 rounded-md shadow-md hover:shadow-lg transition duration-300 relative"
                     >
                         <Link
-                            to={COLLECTION_ROUTE + `/${collection.id}`}
+                            to={Routes.COLLECTION + `/${collection.id}`}
                             className="text-blue-500 hover:underline text-lg font-semibold mb-2 block"
                         >
                             {collection.name}
@@ -137,14 +126,16 @@ const UserPage = () => {
                         <p className="text-gray-600 mb-4">
                             {collection.theme.name}
                         </p>
-                        <button
-                            onClick={() =>
-                                handleDeleteCollection(collection.id)
-                            }
-                            className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
-                        >
-                            Delete
-                        </button>
+                        {isAuthor ? (
+                            <button
+                                onClick={() =>
+                                    handleDeleteCollection(collection.id)
+                                }
+                                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                        ) : null}
                     </div>
                 ))}
             </div>
@@ -199,9 +190,14 @@ const UserPage = () => {
                         <select
                             className="mt-1 p-2 border rounded w-full"
                             value={newCollection.themeId}
-                            onChange={(e) => handleThemeChange(e.target.value)}
+                            onChange={(e) =>
+                                setNewCollection((prev) => ({
+                                    ...prev,
+                                    themeId: e.target.value,
+                                }))
+                            }
                         >
-                            {themes.map((theme) => (
+                            {themes.themes.map((theme) => (
                                 <option key={theme.id} value={theme.id}>
                                     {theme.name}
                                 </option>
@@ -271,6 +267,6 @@ const UserPage = () => {
             )}
         </div>
     );
-};
+});
 
 export default UserPage;

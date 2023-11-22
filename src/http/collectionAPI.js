@@ -1,9 +1,14 @@
 import { $host } from ".";
 
-export const fetchCollections = async (id) => {
-    const { data } = await $host.get("api/collection/" + id);
+export const fetchUserCollections = async (userId) => {
+    const { data } = await $host.get("api/collection/us/" + userId);
     return data;
 };
+
+export const fetchCollection = async (collectionId) => {
+    const { data } = await $host.get("api/collection/col/" + collectionId);
+    return data;
+}
 
 export const createCollection = async (collection, userId) => {
     const { data } = await $host.post("api/collection", {

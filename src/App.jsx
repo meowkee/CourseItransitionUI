@@ -5,6 +5,8 @@ import { observer } from "mobx-react-lite";
 import { useContext, useEffect } from "react";
 import { Context } from ".";
 import { checkAuthorization } from "./http/userAPI";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = observer(() => {
     const { user } = useContext(Context);
@@ -30,6 +32,7 @@ const App = observer(() => {
         <BrowserRouter>
             <CustomNavbar />
             <AppRouter />
+            <ToastContainer />
         </BrowserRouter>
     );
 });

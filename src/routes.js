@@ -4,38 +4,38 @@ import CollectionPage from "./pages/CollectionPage"
 import ItemPage from "./pages/ItemPage"
 import MainPage from "./pages/MainPage"
 import UserPage from "./pages/UserPage"
-import { ADMIN_ROUTE, COLLECTION_ROUTE, LOGIN_ROUTE, MAIN_ROUTE, REGISTRATION_ROUTE, USER_ROUTE, ITEM_ROUTE } from "./utils/consts"
+import { Routes } from "./utils/consts"
 
 export const authRoutes = [
     {
-        path: ADMIN_ROUTE,
+        path: Routes.ADMIN,
         Component: AdminPage
     }
 ]
 
 export const publicRoutes = [
     {
-        path: LOGIN_ROUTE,
+        path: Routes.LOGIN,
         Component: AuthPage
     },
     {
-        path: REGISTRATION_ROUTE,
+        path: Routes.REGISTRATION,
         Component: AuthPage
     },
     {
-        path: MAIN_ROUTE,
+        path: Routes.MAIN,
         Component: MainPage
     },
     {
-        path: COLLECTION_ROUTE + '/:id',
+        path: Routes.COLLECTION + '/:id',
         Component: CollectionPage
     },
     {
-        path: ITEM_ROUTE + '/:id',
+        path: Routes.ITEM + '/:id',
         Component: ItemPage
     },
     {
-        path: USER_ROUTE + '/:id',
+        path: Routes.USER + '/:id',
         Component: UserPage
     }
 ]

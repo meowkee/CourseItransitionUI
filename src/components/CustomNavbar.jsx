@@ -1,12 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { Link, useLocation } from "react-router-dom";
-import {
-    ADMIN_ROUTE,
-    LOGIN_ROUTE,
-    MAIN_ROUTE,
-    REGISTRATION_ROUTE,
-    USER_ROUTE,
-} from "../utils/consts";
+import { Roles, Routes } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { Context } from "..";
@@ -33,9 +27,9 @@ const CustomNavbar = observer(() => {
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
                                 <Link
-                                    to={MAIN_ROUTE}
+                                    to={Routes.MAIN}
                                     className={classNames(
-                                        location.pathname === MAIN_ROUTE
+                                        location.pathname === Routes.MAIN
                                             ? "bg-gray-700 text-white"
                                             : "text-gray-300 hover:bg-gray-700 hover:text-white",
                                         "rounded-md px-3 py-2 text-sm font-medium"
@@ -43,11 +37,12 @@ const CustomNavbar = observer(() => {
                                 >
                                     Main page
                                 </Link>
-                                {user.isAuth ? (
+                                {user.isAuth && (
                                     <Link
-                                        to={USER_ROUTE + `/${user.user.id}`}
+                                        to={Routes.USER + `/${user.user.id}`}
                                         className={classNames(
-                                            location.pathname === USER_ROUTE + `/${user.user.id}`
+                                            location.pathname ===
+                                                Routes.USER + `/${user.user.id}`
                                                 ? "bg-gray-700 text-white"
                                                 : "text-gray-300 hover:bg-gray-700 hover:text-white",
                                             "rounded-md px-3 py-2 text-sm font-medium"
@@ -55,12 +50,12 @@ const CustomNavbar = observer(() => {
                                     >
                                         My collections
                                     </Link>
-                                ) : null}
-                                {user.user.role === "ADMIN" ? (
+                                )}
+                                {user.user.role === Roles.ADMIN && (
                                     <Link
-                                        to={ADMIN_ROUTE}
+                                        to={Routes.ADMIN}
                                         className={classNames(
-                                            location.pathname === ADMIN_ROUTE
+                                            location.pathname === Routes.ADMIN
                                                 ? "bg-gray-700 text-white"
                                                 : "text-gray-300 hover:bg-gray-700 hover:text-white",
                                             "rounded-md px-3 py-2 text-sm font-medium"
@@ -68,7 +63,7 @@ const CustomNavbar = observer(() => {
                                     >
                                         Admin page
                                     </Link>
-                                ) : null}
+                                )}
                             </div>
                         </div>
                     </div>
@@ -85,13 +80,13 @@ const CustomNavbar = observer(() => {
                     ) : (
                         <div className="flex items-center space-x-4">
                             <Link
-                                to={LOGIN_ROUTE}
+                                to={Routes.LOGIN}
                                 className="bg-gray-900 text-gray-300 hover:bg-green-900 hover:text-white px-3 py-2 text-sm font-medium rounded-md"
                             >
                                 Log In
                             </Link>
                             <Link
-                                to={REGISTRATION_ROUTE}
+                                to={Routes.REGISTRATION}
                                 className="bg-gray-900 text-gray-300 hover:bg-green-900 hover:text-white px-3 py-2 text-sm font-medium rounded-md"
                             >
                                 Sign Up

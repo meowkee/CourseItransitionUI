@@ -25,3 +25,8 @@ export const checkAuthorization = async () => {
     localStorage.setItem('token', data.token)
     return jwtDecode(data.token);
 };
+
+export const fetchUserById = async (id) => {
+    const { data } = await $host.get("api/user/" + id);
+    return data;
+}

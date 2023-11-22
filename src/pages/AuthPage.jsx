@@ -1,22 +1,28 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LOGIN_ROUTE, MAIN_ROUTE, REGISTRATION_ROUTE } from "../utils/consts";
+import { Routes } from "../utils/consts";
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { login, registration } from "../http/userAPI";
+import { toast } from "react-toastify";
+import { validateFields } from "../utils/validation/authPageValidation.js";
 
 const AuthPage = observer(() => {
     const { user } = useContext(Context);
     const navigate = useNavigate();
     const location = useLocation();
-    const isLogin = location.pathname === LOGIN_ROUTE;
+    const isLogin = location.pathname === Routes.LOGIN;
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
 
     const signUpOrIn = async () => {
         try {
+            if (!validateFields(name, email, password)) {
+                toast.error("All fields are required");
+                return;
+            }
             let data;
             if (isLogin) {
                 data = await login(email, password);
@@ -25,9 +31,9 @@ const AuthPage = observer(() => {
             }
             user.setUser(data);
             user.setIsAuth(true);
-            navigate(MAIN_ROUTE);
+            navigate(Routes.MAIN);
         } catch (e) {
-            alert(e.response.data.message);
+            toast.error(e.response.data.message);
         }
     };
 
@@ -41,7 +47,7 @@ const AuthPage = observer(() => {
                     <p className="mt-2 text-center text-sm text-gray-600">
                         or{" "}
                         <Link
-                            to={isLogin ? REGISTRATION_ROUTE : LOGIN_ROUTE}
+                            to={isLogin ? Routes.REGISTRATION : Routes.LOGIN}
                             className="font-medium text-green-700 hover:text-green-500"
                         >
                             {isLogin
@@ -141,7 +147,7 @@ const AuthPage = observer(() => {
                                 border border-transparent text-sm font-medium rounded-md text-white
                                 bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2
                                 focus:ring-offset-2"
-                                onClick={signUpOrIn}
+                            onClick={signUpOrIn}
                         >
                             {isLogin ? "Log in" : "Register"}
                         </button>
