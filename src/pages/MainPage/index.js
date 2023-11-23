@@ -1,6 +1,6 @@
-import MostRecentlyTable from "../components/MostRecentlyTable";
+import { MostRecentlyTable } from "../../components/MostRecentlyTable";
 
-const MainPage = () => {
+export const MainPage = () => {
     return (
         <div>
             <h3>Most recently added items:</h3>
@@ -8,5 +8,3 @@ const MainPage = () => {
         </div>
     );
 };
-
-export default MainPage;

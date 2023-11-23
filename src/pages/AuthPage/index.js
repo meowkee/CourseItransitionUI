@@ -1,14 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Routes } from "../utils/consts";
+import { Routes } from "../../utils/consts.js";
 import { observer } from "mobx-react-lite";
-import { Context } from "../index";
+import { Context } from "../../index";
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { login, registration } from "../http/userAPI";
+import { login, registration } from "../../http/userAPI.js";
 import { toast } from "react-toastify";
-import { validateFields } from "../utils/validation/authPageValidation.js";
+import { validateFields } from "../../utils/validation/authPageValidation.js";
 
-const AuthPage = observer(() => {
+export const AuthPage = observer(() => {
     const { user } = useContext(Context);
     const navigate = useNavigate();
     const location = useLocation();
@@ -157,5 +157,3 @@ const AuthPage = observer(() => {
         </div>
     );
 });
-
-export default AuthPage;

@@ -1,17 +1,21 @@
 import { Disclosure } from "@headlessui/react";
 import { Link, useLocation } from "react-router-dom";
-import { Roles, Routes } from "../utils/consts";
+import { Roles, Routes } from "../../utils/consts";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
-import { Context } from "..";
+import { Context } from "../..";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
 
-const CustomNavbar = observer(() => {
+export const CustomNavbar = observer(() => {
     const location = useLocation();
-    const { user } = useContext(Context);
+    const { user, items } = useContext(Context);
+
+    const searchHandler = (e) => {
+        items.setSearch(e.target.value);
+    }
 
     const logoutHandler = () => {
         user.setIsAuth(false);
@@ -66,6 +70,14 @@ const CustomNavbar = observer(() => {
                                 )}
                             </div>
                         </div>
+                        <div className="flex ml-auto items-center pl-4">
+                            <input
+                                className="px-2 py-1 bg-gray-700 text-white rounded-md"
+                                type="text"
+                                placeholder="Search"
+                                onChange={searchHandler}
+                            />
+                        </div>
                     </div>
                     {user.isAuth ? (
                         <div className="flex items-center space-x-4 text-gray-300">
@@ -98,5 +110,3 @@ const CustomNavbar = observer(() => {
         </Disclosure>
     );
 });
-
-export default CustomNavbar;
