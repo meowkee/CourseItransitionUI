@@ -35,12 +35,9 @@ export const ItemPage = observer(() => {
                         </div>
                     )}
                 </div>
-                {/* Comments Block */}
                 <div className="mb-4">
-                    <h2 className="text-lg font-semibold mb-2">---------------------------------</h2>
-                    {/* Add your comments rendering logic here */}
+                    <h2 className="text-lg font-semibold mb-2"></h2>
                 </div>
-                {/* Like Button */}
                 <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
                     Like
                 </button>
