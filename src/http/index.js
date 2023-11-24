@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const $host = axios.create({
-    //baseURL: "https://course-itransition-api.vercel.app/",
-    baseURL: "http://localhost:3001/",
+    baseURL: "https://course-itransition-api.vercel.app/",
+    //baseURL: "http://localhost:3001/",
 });
 
 const $authHost = axios.create({
-    //baseURL: "https://course-itransition-api.vercel.app/",
-    baseURL: "http://localhost:3001/",
+    baseURL: "https://course-itransition-api.vercel.app/",
+    //baseURL: "http://localhost:3001/",
 });
 
 const authInterceptor = (config) => {
