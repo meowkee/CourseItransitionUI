@@ -19,3 +19,8 @@ export const createItem = async (item, collectionId) => {
     });
     return data;
 };
+
+export const deleteItem = async (itemId) => {
+    const { data } = await $host.delete("api/item/" + itemId);
+    return data;
+};

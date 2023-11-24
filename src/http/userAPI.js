@@ -31,7 +31,11 @@ export const fetchUserById = async (id) => {
         const { data } = await $host.get("api/user/" + id);
         return data;
     } catch (e) {
-        console.log(e);
         return {isError: true, message: e.response.data.message};
     }
 };
+
+export const fetchUsers = async () => {
+    const {data} = await $host.get("api/user");
+    return data;
+}

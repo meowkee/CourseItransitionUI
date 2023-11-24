@@ -4,16 +4,30 @@ import { createItem, fetchItems } from "../../http/itemAPI";
 
 export const ModalItemPage = ({ id, handleCloseModal }) => {
     const {
-        collections: { currentCollection }, items
+        collections: { currentCollection },
+        items,
     } = useContext(Context);
     const [newItem, setNewItem] = useState({
         name: "",
-        tags: [],
+        tags: items.tags?.map((tag) => ({
+            name: tag.name,
+            itemId: null,
+        })),
         fields: currentCollection.fields.map((field) => ({
             fieldId: field.id,
             value: "",
         })),
     });
+
+    const handleChangeTags = (e) => {
+        setNewItem((prev) => ({
+            ...prev,
+            tags: e.target.value.split(", ").map((tagName) => ({
+                name: tagName,
+                fieldId: null,
+            })),
+        }));
+    };
 
     const handleCreateItem = async () => {
         try {
@@ -22,11 +36,9 @@ export const ModalItemPage = ({ id, handleCloseModal }) => {
             const updatedItems = await fetchItems(currentCollection.id);
             items.setItems(updatedItems);
             handleCloseModal();
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e);
         }
-        
     };
 
     const modalContentStyle = {
@@ -72,13 +84,8 @@ export const ModalItemPage = ({ id, handleCloseModal }) => {
                 <input
                     type="text"
                     className="mt-1 p-2 border rounded w-full"
-                    value={newItem.tags.join(", ")}
-                    onChange={(e) =>
-                        setNewItem((prev) => ({
-                            ...prev,
-                            tags: e.target.value.split(", "),
-                        }))
-                    }
+                    value={newItem.tags?.map((tag) => tag.name).join(", ")}
+                    onChange={handleChangeTags}
                 />
             </div>
             {currentCollection.fields?.map((field) => (

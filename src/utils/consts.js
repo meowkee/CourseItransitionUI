@@ -12,3 +12,8 @@ export const Roles = {
     ADMIN: "ADMIN",
     USER: "USER",
 }
+
+export const Statuses = {
+    BLOCKED: "BLOCKED",
+    ACTIVE: "ACTIVE",
+}
